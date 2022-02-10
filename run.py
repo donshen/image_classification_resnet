@@ -196,33 +196,3 @@ if __name__ == '__main__':
 
     print(f'Testing loss: {test_loss / len(test_loader):.3f}.. '
           f'Accuracy: {accuracy / len(test_loader):.3f}')
-
-    # Visualize predictions
-    fig, axes = plt.subplots(nrows=2, ncols=5, figsize=(20, 8))
-    axes = axes.flatten()
-    with torch.no_grad():
-        model.eval()
-        for img, label in test_loader:
-            # Move images, labels to GPU
-            img, label = img.to('cuda'), label.to('cuda')
-
-            # Get model output
-            output = model.forward(img)
-
-            # Get probabilities
-            probabilities = torch.exp(output)
-
-            # Get top predicted class
-            top_p, top_class = probabilities.topk(1, dim=1)
-
-            img, label, top_class = img.cpu().numpy()[0], label.cpu().numpy()[0], top_class.cpu().numpy()[0][0]
-
-            axes[0].imshow(img)
-            axes[0].set_title(f'Label: {int(label)}')
-            axes[1].bar(range(2), [1 - top_class, top_class])
-            axes[1].set_xticks([0, 1])
-            axes[1].set_xticklabels(['Cat', 'Dog'])
-            axes[1].set_title('Prediction')
-            break
-
-    plt.show()
